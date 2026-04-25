@@ -1,0 +1,3735 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- ============================================================
+       StarMo Restaurant — Single Page Website
+       Vintage Rustic | Mostar, Bosnia & Herzegovina
+       Built with pure HTML, CSS & Vanilla JavaScript
+  ============================================================ -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="StarMo Restaurant & Café — A rustic gem nestled by the iconic Old Bridge in Mostar. Savour traditional Bosnian flavours with a modern twist."
+    />
+    <meta
+      name="keywords"
+      content="StarMo, restaurant, Mostar, Old Bridge, Bosnian food, café, dining"
+    />
+    <meta name="author" content="StarMo Restaurant" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="StarMo — Restaurant & Café, Mostar" />
+    <meta
+      property="og:description"
+      content="A rustic gem by the Old Bridge. Traditional Bosnian cuisine with a warm, welcoming soul."
+    />
+    <meta property="og:type" content="website" />
+    <title>StarMo — Restaurant & Café | Mostar</title>
+
+    <!-- Google Fonts: Playfair Display + Lato + Special Elite (chalkboard feel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lato:wght@300;400;700&family=Special+Elite&family=Caveat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <style>
+      /* ============================================================
+       CSS CUSTOM PROPERTIES (Variables)
+    ============================================================ */
+      :root {
+        /* Color Palette */
+        --warm-white: #fffdf1;
+        --peach: #ffce99;
+        --orange: #ff9644;
+        --deep-brown: #562f00;
+        --mid-brown: #7a4510;
+        --light-brown: #b07040;
+        --chalk-dark: #2a1800;
+        --chalk-light: #f5ecd0;
+        --overlay: rgba(42, 24, 0, 0.72);
+
+        /* Dark Mode Overrides (toggled via .dark class on body) */
+        --bg: var(--warm-white);
+        --surface: #fff7e0;
+        --text-main: var(--deep-brown);
+        --text-sub: var(--mid-brown);
+        --border: rgba(86, 47, 0, 0.15);
+        --card-bg: #fffbef;
+        --nav-bg: rgba(255, 253, 241, 0.95);
+
+        /* Typography */
+        --font-serif: "Playfair Display", Georgia, serif;
+        --font-sans: "Lato", sans-serif;
+        --font-chalk: "Special Elite", cursive;
+        --font-hand: "Caveat", cursive;
+
+        /* Spacing */
+        --section-pad: 100px;
+        --container: 1160px;
+
+        /* Transitions */
+        --trans: 0.3s ease;
+        --trans-slow: 0.6s ease;
+      }
+
+      /* Dark Mode Variables */
+      body.dark {
+        --bg: #1a0d00;
+        --surface: #241200;
+        --text-main: #ffce99;
+        --text-sub: #b07040;
+        --border: rgba(255, 206, 153, 0.12);
+        --card-bg: #2a1500;
+        --nav-bg: rgba(26, 13, 0, 0.97);
+      }
+
+      /* ============================================================
+       RESET & BASE
+    ============================================================ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+        font-size: 16px;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background: var(--bg);
+        color: var(--text-main);
+        transition:
+          background var(--trans),
+          color var(--trans);
+        overflow-x: hidden;
+      }
+
+      /* Custom Cursor */
+      body,
+      a,
+      button {
+        cursor: none;
+      }
+      #custom-cursor {
+        position: fixed;
+        width: 18px;
+        height: 18px;
+        background: var(--orange);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate(-50%, -50%);
+        transition:
+          transform 0.12s ease,
+          width 0.2s ease,
+          height 0.2s ease,
+          opacity 0.2s ease;
+        mix-blend-mode: multiply;
+      }
+      #custom-cursor.hover {
+        width: 44px;
+        height: 44px;
+        background: var(--peach);
+        opacity: 0.7;
+      }
+      #cursor-trail {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        border: 2px solid var(--orange);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99998;
+        transform: translate(-50%, -50%);
+        transition: transform 0.25s ease;
+        opacity: 0.5;
+      }
+
+      /* ============================================================
+       PRELOADER
+    ============================================================ */
+      #preloader {
+        position: fixed;
+        inset: 0;
+        background: var(--deep-brown);
+        z-index: 100000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        transition:
+          opacity 0.6s ease,
+          visibility 0.6s ease;
+      }
+      #preloader.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .preloader-logo {
+        font-family: var(--font-chalk);
+        color: var(--peach);
+        font-size: 3rem;
+        letter-spacing: 4px;
+      }
+      .preloader-star {
+        color: var(--orange);
+      }
+      .preloader-bar {
+        width: 200px;
+        height: 3px;
+        background: rgba(255, 206, 153, 0.2);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+      .preloader-fill {
+        height: 100%;
+        background: var(--orange);
+        border-radius: 99px;
+        animation: loadFill 1.8s ease forwards;
+      }
+      .preloader-text {
+        font-family: var(--font-hand);
+        color: var(--peach);
+        font-size: 1.1rem;
+        opacity: 0.7;
+      }
+      @keyframes loadFill {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      /* ============================================================
+       NOISE TEXTURE OVERLAY (rustic feel)
+    ============================================================ */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* ============================================================
+       UTILITY
+    ============================================================ */
+      .container {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      .section-tag {
+        font-family: var(--font-hand);
+        font-size: 1.1rem;
+        color: var(--orange);
+        display: block;
+        margin-bottom: 8px;
+      }
+      .section-title {
+        font-family: var(--font-serif);
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        line-height: 1.2;
+        color: var(--text-main);
+      }
+      .section-subtitle {
+        font-family: var(--font-sans);
+        font-size: 1.05rem;
+        color: var(--text-sub);
+        line-height: 1.7;
+        max-width: 580px;
+      }
+      .section-header {
+        margin-bottom: 56px;
+      }
+      .section-header.centered {
+        text-align: center;
+      }
+      .section-header.centered .section-subtitle {
+        margin: 0 auto;
+      }
+
+      /* Divider */
+      .chalk-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 12px 0;
+      }
+      .chalk-divider::before,
+      .chalk-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          var(--orange),
+          transparent
+        );
+        opacity: 0.4;
+      }
+      .chalk-divider i {
+        color: var(--orange);
+        font-size: 0.9rem;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 32px;
+        border-radius: 4px;
+        font-family: var(--font-sans);
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        transition: all var(--trans);
+      }
+      .btn-primary {
+        background: var(--orange);
+        color: var(--warm-white);
+        box-shadow: 0 4px 20px rgba(255, 150, 68, 0.35);
+      }
+      .btn-primary:hover {
+        background: var(--mid-brown);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(255, 150, 68, 0.45);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--orange);
+        border: 2px solid var(--orange);
+      }
+      .btn-outline:hover {
+        background: var(--orange);
+        color: var(--warm-white);
+        transform: translateY(-2px);
+      }
+      .btn-chalk {
+        background: var(--deep-brown);
+        color: var(--peach);
+        font-family: var(--font-chalk);
+        letter-spacing: 2px;
+      }
+      .btn-chalk:hover {
+        background: var(--mid-brown);
+        transform: translateY(-2px);
+      }
+
+      /* Fade-in animation */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .fade-in.delay-1 {
+        transition-delay: 0.1s;
+      }
+      .fade-in.delay-2 {
+        transition-delay: 0.2s;
+      }
+      .fade-in.delay-3 {
+        transition-delay: 0.3s;
+      }
+      .fade-in.delay-4 {
+        transition-delay: 0.4s;
+      }
+      .fade-in.delay-5 {
+        transition-delay: 0.5s;
+      }
+
+      /* ============================================================
+       NAVIGATION
+    ============================================================ */
+      #navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        transition:
+          background var(--trans),
+          box-shadow var(--trans);
+      }
+      #navbar.scrolled {
+        box-shadow: 0 4px 24px rgba(86, 47, 0, 0.12);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 72px;
+      }
+      .nav-logo {
+        font-family: var(--font-chalk);
+        font-size: 1.8rem;
+        color: var(--deep-brown);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 2px;
+        transition: color var(--trans);
+      }
+      body.dark .nav-logo {
+        color: var(--peach);
+      }
+      .nav-logo span {
+        color: var(--orange);
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-family: var(--font-sans);
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-main);
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 4px;
+        transition:
+          color var(--trans),
+          background var(--trans);
+      }
+      .nav-links a:hover {
+        color: var(--orange);
+        background: rgba(255, 150, 68, 0.08);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* Dark/Light toggle */
+      #theme-toggle {
+        background: none;
+        border: 2px solid var(--border);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-main);
+        font-size: 1rem;
+        transition: all var(--trans);
+      }
+      #theme-toggle:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+      }
+
+      /* Hamburger */
+      #hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 40px;
+        height: 40px;
+        background: none;
+        border: 2px solid var(--border);
+        border-radius: 4px;
+        transition: border-color var(--trans);
+      }
+      #hamburger:hover {
+        border-color: var(--orange);
+      }
+      #hamburger span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        background: var(--text-main);
+        border-radius: 2px;
+        transition: all var(--trans);
+      }
+      #hamburger.open span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+      #hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      #hamburger.open span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      /* Mobile menu */
+      #mobile-menu {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg);
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+      #mobile-menu.open {
+        transform: translateX(0);
+      }
+      #mobile-menu a {
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        color: var(--text-main);
+        text-decoration: none;
+        transition: color var(--trans);
+      }
+      #mobile-menu a:hover {
+        color: var(--orange);
+      }
+
+      /* ============================================================
+       HERO SECTION
+    ============================================================ */
+      #hero {
+        position: relative;
+        height: 100vh;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      /* Video background (fallback to image) */
+      #hero-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+      }
+      /* Fallback gradient when no video */
+      .hero-bg-fallback {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          160deg,
+          #562f00 0%,
+          #7a4510 40%,
+          #b07040 80%,
+          #ff9644 100%
+        );
+        z-index: 0;
+      }
+      /* Chalkboard texture overlay */
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: var(--overlay);
+        z-index: 1;
+      }
+      /* Decorative SVG border */
+      .hero-frame {
+        position: absolute;
+        inset: 20px;
+        border: 2px solid rgba(255, 206, 153, 0.25);
+        border-radius: 2px;
+        z-index: 2;
+        pointer-events: none;
+      }
+      .hero-frame::before,
+      .hero-frame::after {
+        content: "";
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border-color: var(--orange);
+        border-style: solid;
+      }
+      .hero-frame::before {
+        top: -2px;
+        left: -2px;
+        border-width: 3px 0 0 3px;
+      }
+      .hero-frame::after {
+        bottom: -2px;
+        right: -2px;
+        border-width: 0 3px 3px 0;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        color: var(--warm-white);
+        padding: 0 24px;
+      }
+      .hero-eyebrow {
+        font-family: var(--font-hand);
+        font-size: 1.4rem;
+        color: var(--peach);
+        margin-bottom: 16px;
+        display: block;
+        animation: fadeDown 0.8s ease both;
+      }
+      .hero-title {
+        font-family: var(--font-chalk);
+        font-size: clamp(4rem, 12vw, 9rem);
+        line-height: 0.9;
+        letter-spacing: 8px;
+        color: var(--warm-white);
+        text-shadow:
+          0 0 60px rgba(255, 150, 68, 0.4),
+          4px 4px 0 rgba(86, 47, 0, 0.5);
+        animation: fadeDown 0.8s 0.15s ease both;
+        margin-bottom: 8px;
+      }
+      .hero-title span {
+        color: var(--orange);
+      }
+      .hero-tagline {
+        font-family: var(--font-hand);
+        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+        color: var(--peach);
+        margin: 24px 0 40px;
+        animation: fadeDown 0.8s 0.3s ease both;
+      }
+      .hero-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        animation: fadeDown 0.8s 0.45s ease both;
+      }
+      .hero-scroll {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--peach);
+        font-family: var(--font-hand);
+        font-size: 0.9rem;
+        animation: bounce 2s infinite;
+      }
+      .hero-scroll i {
+        font-size: 1.3rem;
+        color: var(--orange);
+      }
+
+      /* Parallax layers */
+      .parallax-layer {
+        position: absolute;
+        inset: -20%;
+        background-attachment: fixed;
+      }
+
+      @keyframes fadeDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(8px);
+        }
+      }
+
+      /* ============================================================
+       ABOUT SECTION
+    ============================================================ */
+      #about {
+        padding: var(--section-pad) 0;
+        background: var(--bg);
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .about-images {
+        position: relative;
+        height: 500px;
+      }
+      .about-img-main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 75%;
+        height: 80%;
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 20px 60px rgba(86, 47, 0, 0.2);
+      }
+      .about-img-accent {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 60%;
+        height: 55%;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 6px solid var(--bg);
+        box-shadow: 0 20px 60px rgba(86, 47, 0, 0.2);
+      }
+      .about-badge {
+        position: absolute;
+        top: 40%;
+        left: 65%;
+        transform: translate(-50%, -50%);
+        width: 100px;
+        height: 100px;
+        background: var(--orange);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 30px rgba(255, 150, 68, 0.4);
+        z-index: 2;
+      }
+      .about-badge .years {
+        font-family: var(--font-chalk);
+        font-size: 2rem;
+        color: var(--warm-white);
+        line-height: 1;
+      }
+      .about-badge .years-label {
+        font-family: var(--font-hand);
+        font-size: 0.7rem;
+        color: var(--warm-white);
+        text-align: center;
+        line-height: 1.2;
+      }
+      .about-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 32px;
+      }
+      .about-feature {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        transition:
+          box-shadow var(--trans),
+          transform var(--trans);
+      }
+      .about-feature:hover {
+        box-shadow: 0 8px 30px rgba(86, 47, 0, 0.1);
+        transform: translateY(-4px);
+      }
+      .about-feature-icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 150, 68, 0.12);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--orange);
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .about-feature h4 {
+        font-family: var(--font-serif);
+        font-size: 0.95rem;
+        color: var(--text-main);
+        margin-bottom: 4px;
+      }
+      .about-feature p {
+        font-size: 0.82rem;
+        color: var(--text-sub);
+        line-height: 1.5;
+      }
+
+      /* ============================================================
+       STATISTICS SECTION
+    ============================================================ */
+      #stats {
+        background: var(--deep-brown);
+        padding: 80px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      #stats::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='%23FF9644' opacity='0.15'/%3E%3C/svg%3E")
+          repeat;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 40px;
+        position: relative;
+      }
+      .stat-card {
+        text-align: center;
+        color: var(--warm-white);
+      }
+      .stat-number {
+        font-family: var(--font-chalk);
+        font-size: 3.5rem;
+        color: var(--orange);
+        line-height: 1;
+        display: block;
+      }
+      .stat-suffix {
+        color: var(--peach);
+      }
+      .stat-label {
+        font-family: var(--font-hand);
+        font-size: 1.1rem;
+        color: var(--peach);
+        margin-top: 8px;
+        display: block;
+      }
+
+      /* ============================================================
+       MENU / PRICING SECTION
+    ============================================================ */
+      #menu {
+        padding: var(--section-pad) 0;
+        background: var(--surface, #fff7e0);
+      }
+      body.dark #menu {
+        background: #1e0f00;
+      }
+
+      /* Tab pills */
+      .menu-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 48px;
+      }
+      .menu-tab {
+        padding: 10px 24px;
+        border-radius: 40px;
+        border: 2px solid var(--border);
+        background: transparent;
+        color: var(--text-sub);
+        font-family: var(--font-sans);
+        font-weight: 700;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: all var(--trans);
+      }
+      .menu-tab:hover {
+        border-color: var(--orange);
+        color: var(--orange);
+      }
+      .menu-tab.active {
+        background: var(--orange);
+        border-color: var(--orange);
+        color: var(--warm-white);
+      }
+
+      /* Menu card grid */
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 28px;
+      }
+      .menu-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        transition:
+          box-shadow var(--trans),
+          transform var(--trans);
+      }
+      .menu-card:hover {
+        box-shadow: 0 16px 40px rgba(86, 47, 0, 0.14);
+        transform: translateY(-6px);
+      }
+      .menu-card-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.4s ease;
+      }
+      .menu-card:hover .menu-card-img {
+        transform: scale(1.04);
+      }
+      .menu-card-body {
+        padding: 20px 22px;
+      }
+      .menu-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .menu-card h3 {
+        font-family: var(--font-serif);
+        font-size: 1.1rem;
+        color: var(--text-main);
+      }
+      .menu-card .price {
+        font-family: var(--font-chalk);
+        font-size: 1.3rem;
+        color: var(--orange);
+        white-space: nowrap;
+      }
+      .menu-card p {
+        font-size: 0.88rem;
+        color: var(--text-sub);
+        line-height: 1.6;
+      }
+      .menu-card-tags {
+        display: flex;
+        gap: 6px;
+        margin-top: 12px;
+        flex-wrap: wrap;
+      }
+      .menu-tag {
+        padding: 3px 10px;
+        background: rgba(255, 150, 68, 0.1);
+        border-radius: 40px;
+        font-size: 0.72rem;
+        color: var(--orange);
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      /* ============================================================
+       GALLERY SECTION (Lightbox)
+    ============================================================ */
+      #gallery {
+        padding: var(--section-pad) 0;
+        background: var(--bg);
+      }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto auto;
+        gap: 12px;
+      }
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .gallery-item:nth-child(1) {
+        grid-column: span 2;
+        grid-row: span 2;
+      }
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        min-height: 200px;
+        transition: transform 0.4s ease;
+      }
+      .gallery-item:hover img {
+        transform: scale(1.06);
+      }
+      .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(86, 47, 0, 0.5);
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity var(--trans);
+      }
+      .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+      }
+      .gallery-overlay i {
+        color: var(--warm-white);
+        font-size: 2rem;
+      }
+
+      /* Lightbox */
+      #lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          opacity 0.3s ease,
+          visibility 0.3s ease;
+      }
+      #lightbox.open {
+        opacity: 1;
+        visibility: visible;
+      }
+      #lightbox img {
+        max-width: 90vw;
+        max-height: 85vh;
+        object-fit: contain;
+        border-radius: 4px;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      #lightbox.open img {
+        transform: scale(1);
+      }
+      #lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 24px;
+        color: white;
+        font-size: 2rem;
+        background: none;
+        border: none;
+        color: var(--peach);
+      }
+      #lightbox-prev,
+      #lightbox-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 150, 68, 0.2);
+        border: 2px solid var(--orange);
+        color: var(--orange);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--trans);
+      }
+      #lightbox-prev:hover,
+      #lightbox-next:hover {
+        background: var(--orange);
+        color: white;
+      }
+      #lightbox-prev {
+        left: 24px;
+      }
+      #lightbox-next {
+        right: 24px;
+      }
+
+      /* ============================================================
+       TESTIMONIALS
+    ============================================================ */
+      #testimonials {
+        padding: var(--section-pad) 0;
+        background: var(--deep-brown);
+        position: relative;
+        overflow: hidden;
+      }
+      #testimonials::before {
+        content: '"';
+        position: absolute;
+        top: -20px;
+        left: 5%;
+        font-family: var(--font-serif);
+        font-size: 30rem;
+        color: rgba(255, 150, 68, 0.05);
+        line-height: 1;
+        pointer-events: none;
+      }
+      .testimonials-slider {
+        position: relative;
+        overflow: hidden;
+      }
+      .testimonials-track {
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+      .testimonial-slide {
+        min-width: 100%;
+        padding: 0 80px;
+      }
+      .testimonial-card {
+        background: rgba(255, 206, 153, 0.07);
+        border: 1px solid rgba(255, 150, 68, 0.15);
+        border-radius: 6px;
+        padding: 48px;
+        text-align: center;
+        max-width: 740px;
+        margin: 0 auto;
+      }
+      .testimonial-stars {
+        color: var(--orange);
+        margin-bottom: 24px;
+        font-size: 1.1rem;
+      }
+      .testimonial-text {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        color: var(--peach);
+        line-height: 1.7;
+        margin-bottom: 32px;
+      }
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+      }
+      .testimonial-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--orange);
+      }
+      .testimonial-name {
+        font-family: var(--font-chalk);
+        font-size: 1.1rem;
+        color: var(--warm-white);
+      }
+      .testimonial-origin {
+        font-family: var(--font-hand);
+        font-size: 0.9rem;
+        color: var(--light-brown);
+      }
+      .slider-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+      }
+      .slider-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 150, 68, 0.15);
+        border: 2px solid var(--orange);
+        color: var(--orange);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all var(--trans);
+      }
+      .slider-btn:hover {
+        background: var(--orange);
+        color: white;
+      }
+      .slider-dots {
+        display: flex;
+        gap: 8px;
+      }
+      .slider-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 150, 68, 0.3);
+        border: none;
+        transition:
+          background var(--trans),
+          transform var(--trans);
+      }
+      .slider-dot.active {
+        background: var(--orange);
+        transform: scale(1.3);
+      }
+
+      /* ============================================================
+       BOOKING SECTION
+    ============================================================ */
+      #booking {
+        padding: var(--section-pad) 0;
+        background: var(--bg);
+      }
+      .booking-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+      }
+      .booking-info h3 {
+        font-family: var(--font-serif);
+        font-size: 1.4rem;
+        color: var(--text-main);
+        margin-bottom: 16px;
+      }
+      .booking-details {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin: 28px 0;
+      }
+      .booking-details li {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-size: 0.95rem;
+        color: var(--text-sub);
+      }
+      .booking-details li i {
+        width: 38px;
+        height: 38px;
+        background: rgba(255, 150, 68, 0.1);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--orange);
+        flex-shrink: 0;
+      }
+
+      /* Form */
+      .booking-form {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 40px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text-sub);
+        margin-bottom: 8px;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg);
+        border: 1.5px solid var(--border);
+        border-radius: 4px;
+        color: var(--text-main);
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        transition:
+          border-color var(--trans),
+          box-shadow var(--trans);
+        outline: none;
+        -webkit-appearance: none;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(255, 150, 68, 0.15);
+      }
+      .form-group input.error,
+      .form-group select.error {
+        border-color: #e53e3e;
+      }
+      .form-error-msg {
+        font-size: 0.78rem;
+        color: #e53e3e;
+        margin-top: 4px;
+        display: none;
+      }
+      .form-error-msg.show {
+        display: block;
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+      .form-success {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background: rgba(72, 187, 120, 0.1);
+        border: 1px solid rgba(72, 187, 120, 0.3);
+        border-radius: 4px;
+        color: #276749;
+        margin-top: 12px;
+      }
+      .form-success.show {
+        display: block;
+      }
+      body.dark .form-success {
+        color: #9ae6b4;
+      }
+
+      /* ============================================================
+       FAQ SECTION
+    ============================================================ */
+      #faq {
+        padding: var(--section-pad) 0;
+        background: var(--surface, #fff7e0);
+      }
+      body.dark #faq {
+        background: #1e0f00;
+      }
+      .faq-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .faq-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        transition: box-shadow var(--trans);
+      }
+      .faq-item:hover {
+        box-shadow: 0 8px 24px rgba(86, 47, 0, 0.08);
+      }
+      .faq-question {
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: left;
+        color: var(--text-main);
+        font-family: var(--font-serif);
+        font-size: 1rem;
+        font-weight: 600;
+        transition: color var(--trans);
+      }
+      .faq-question:hover {
+        color: var(--orange);
+      }
+      .faq-question i {
+        color: var(--orange);
+        transition: transform var(--trans);
+        flex-shrink: 0;
+      }
+      .faq-item.open .faq-question i {
+        transform: rotate(45deg);
+      }
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.4s ease,
+          padding 0.3s ease;
+        padding: 0 24px;
+      }
+      .faq-item.open .faq-answer {
+        max-height: 300px;
+        padding: 0 24px 20px;
+      }
+      .faq-answer p {
+        font-size: 0.92rem;
+        color: var(--text-sub);
+        line-height: 1.7;
+      }
+
+      /* ============================================================
+       CONTACT SECTION
+    ============================================================ */
+      #contact {
+        padding: var(--section-pad) 0;
+        background: var(--bg);
+      }
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+      }
+      .contact-form-wrap {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 40px;
+      }
+
+      /* ============================================================
+       FOOTER
+    ============================================================ */
+      #footer {
+        background: var(--chalk-dark);
+        color: var(--peach);
+        padding: 80px 0 0;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1.5fr;
+        gap: 48px;
+        padding-bottom: 60px;
+        border-bottom: 1px solid rgba(255, 206, 153, 0.1);
+      }
+      .footer-brand .nav-logo {
+        font-size: 2rem;
+        margin-bottom: 16px;
+        display: block;
+      }
+      .footer-brand p {
+        font-size: 0.9rem;
+        color: rgba(255, 206, 153, 0.6);
+        line-height: 1.7;
+        margin-bottom: 24px;
+      }
+      .social-links {
+        display: flex;
+        gap: 12px;
+      }
+      .social-link {
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(255, 206, 153, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--peach);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all var(--trans);
+      }
+      .social-link:hover {
+        background: var(--orange);
+        border-color: var(--orange);
+        color: white;
+      }
+      .footer-heading {
+        font-family: var(--font-chalk);
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        color: var(--orange);
+        margin-bottom: 20px;
+      }
+      .footer-links {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .footer-links a {
+        color: rgba(255, 206, 153, 0.65);
+        text-decoration: none;
+        font-size: 0.88rem;
+        transition: color var(--trans);
+      }
+      .footer-links a:hover {
+        color: var(--orange);
+      }
+      .footer-hours {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .footer-hours-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: rgba(255, 206, 153, 0.65);
+      }
+      .footer-hours-row span:last-child {
+        color: var(--peach);
+      }
+
+      /* Newsletter */
+      .newsletter-form {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      .newsletter-input {
+        flex: 1;
+        padding: 11px 16px;
+        background: rgba(255, 206, 153, 0.07);
+        border: 1px solid rgba(255, 206, 153, 0.2);
+        border-radius: 4px;
+        color: var(--peach);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        outline: none;
+        transition: border-color var(--trans);
+      }
+      .newsletter-input::placeholder {
+        color: rgba(255, 206, 153, 0.35);
+      }
+      .newsletter-input:focus {
+        border-color: var(--orange);
+      }
+      .newsletter-btn {
+        padding: 11px 18px;
+        background: var(--orange);
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-size: 0.9rem;
+        transition: background var(--trans);
+      }
+      .newsletter-btn:hover {
+        background: var(--mid-brown);
+      }
+      .newsletter-note {
+        font-size: 0.75rem;
+        color: rgba(255, 206, 153, 0.35);
+        margin-top: 8px;
+      }
+
+      /* Map embed */
+      .map-wrap {
+        border-radius: 6px;
+        overflow: hidden;
+        height: 220px;
+        margin-top: 20px;
+        border: 1px solid rgba(255, 206, 153, 0.1);
+      }
+      .map-wrap iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      .footer-bottom {
+        padding: 24px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .footer-bottom p {
+        font-size: 0.82rem;
+        color: rgba(255, 206, 153, 0.35);
+      }
+      .footer-bottom a {
+        color: var(--orange);
+        text-decoration: none;
+      }
+
+      /* ============================================================
+       STICKY CTA
+    ============================================================ */
+      #sticky-cta {
+        position: fixed;
+        bottom: 100px;
+        right: 28px;
+        z-index: 500;
+        transform: translateX(100px);
+        opacity: 0;
+        transition:
+          transform 0.4s ease,
+          opacity 0.4s ease;
+      }
+      #sticky-cta.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      #sticky-cta a {
+        background: var(--orange);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 40px;
+        text-decoration: none;
+        font-family: var(--font-sans);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 8px 24px rgba(255, 150, 68, 0.45);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition:
+          background var(--trans),
+          transform var(--trans);
+        white-space: nowrap;
+      }
+      #sticky-cta a:hover {
+        background: var(--mid-brown);
+        transform: scale(1.04);
+      }
+
+      /* Back to Top */
+      #back-to-top {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        z-index: 500;
+        width: 44px;
+        height: 44px;
+        background: var(--deep-brown);
+        border: 2px solid var(--orange);
+        border-radius: 50%;
+        color: var(--orange);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease,
+          background var(--trans);
+      }
+      #back-to-top.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      #back-to-top:hover {
+        background: var(--orange);
+        color: white;
+      }
+
+      /* ============================================================
+       CHALKBOARD MENU SECTION (decorative)
+    ============================================================ */
+      #specials {
+        padding: var(--section-pad) 0;
+        background: var(--chalk-dark);
+        position: relative;
+      }
+      .chalkboard {
+        background: #1a1200;
+        border: 8px solid #3d2400;
+        border-radius: 8px;
+        padding: 60px;
+        box-shadow:
+          inset 0 0 60px rgba(0, 0, 0, 0.5),
+          0 0 0 4px #5a3800,
+          0 20px 60px rgba(0, 0, 0, 0.4);
+        position: relative;
+      }
+      .chalkboard::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 1px dashed rgba(255, 206, 153, 0.1);
+        border-radius: 4px;
+        pointer-events: none;
+      }
+      .chalk-title {
+        font-family: var(--font-chalk);
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        color: var(--peach);
+        text-align: center;
+        margin-bottom: 8px;
+        text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+      }
+      .chalk-sub {
+        font-family: var(--font-hand);
+        color: rgba(255, 206, 153, 0.5);
+        text-align: center;
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+      }
+      .specials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px;
+      }
+      .special-item {
+        text-align: center;
+      }
+      .special-item .emoji {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        display: block;
+      }
+      .special-item h4 {
+        font-family: var(--font-chalk);
+        font-size: 1.2rem;
+        color: var(--peach);
+        margin-bottom: 6px;
+      }
+      .special-item p {
+        font-family: var(--font-hand);
+        color: rgba(255, 206, 153, 0.55);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+      .special-price {
+        font-family: var(--font-chalk);
+        font-size: 1.4rem;
+        color: var(--orange);
+      }
+      .chalkboard-rule {
+        height: 1px;
+        background: rgba(255, 206, 153, 0.1);
+        margin: 32px 0;
+        position: relative;
+      }
+      .chalkboard-rule::before {
+        content: "✦";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--orange);
+        background: #1a1200;
+        padding: 0 12px;
+        font-size: 0.8rem;
+      }
+
+      /* ============================================================
+       PRICING TABLE
+    ============================================================ */
+      #pricing {
+        padding: var(--section-pad) 0;
+        background: var(--bg);
+      }
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        align-items: start;
+      }
+      .pricing-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 36px;
+        text-align: center;
+        transition:
+          box-shadow var(--trans),
+          transform var(--trans);
+        position: relative;
+      }
+      .pricing-card:hover {
+        box-shadow: 0 20px 50px rgba(86, 47, 0, 0.12);
+        transform: translateY(-8px);
+      }
+      .pricing-card.featured {
+        border-color: var(--orange);
+        box-shadow: 0 20px 50px rgba(255, 150, 68, 0.2);
+        transform: scale(1.03);
+      }
+      .pricing-card.featured:hover {
+        transform: scale(1.03) translateY(-8px);
+      }
+      .pricing-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--orange);
+        color: white;
+        font-family: var(--font-sans);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 5px 16px;
+        border-radius: 40px;
+      }
+      .pricing-icon {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+      }
+      .pricing-name {
+        font-family: var(--font-chalk);
+        font-size: 1.4rem;
+        color: var(--text-main);
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .pricing-desc {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        margin-bottom: 28px;
+        line-height: 1.6;
+      }
+      .pricing-price {
+        font-family: var(--font-chalk);
+        font-size: 3rem;
+        color: var(--orange);
+        line-height: 1;
+      }
+      .pricing-price sup {
+        font-size: 1.2rem;
+        vertical-align: super;
+      }
+      .pricing-period {
+        font-family: var(--font-hand);
+        font-size: 1rem;
+        color: var(--text-sub);
+        margin-bottom: 28px;
+        display: block;
+      }
+      .pricing-features {
+        list-style: none;
+        text-align: left;
+        margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .pricing-features li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+        color: var(--text-sub);
+      }
+      .pricing-features li i {
+        color: var(--orange);
+        font-size: 0.85rem;
+      }
+
+      /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+      @media (max-width: 1024px) {
+        :root {
+          --section-pad: 80px;
+        }
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 32px;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .pricing-grid {
+          grid-template-columns: 1fr;
+          max-width: 400px;
+          margin: 0 auto;
+        }
+        .pricing-card.featured {
+          transform: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        :root {
+          --section-pad: 64px;
+        }
+        .nav-links,
+        .nav-actions .btn {
+          display: none;
+        }
+        #hamburger {
+          display: flex;
+        }
+        .nav-actions #theme-toggle {
+          display: flex;
+        }
+
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .about-images {
+          height: 340px;
+        }
+        .about-features {
+          grid-template-columns: 1fr;
+        }
+        .booking-grid {
+          grid-template-columns: 1fr;
+        }
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .gallery-item:nth-child(1) {
+          grid-column: span 2;
+          grid-row: span 1;
+        }
+        .specials-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .testimonial-slide {
+          padding: 0 20px;
+        }
+        .testimonial-card {
+          padding: 32px 24px;
+        }
+        .hero-title {
+          letter-spacing: 4px;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        #sticky-cta {
+          display: none;
+        }
+        #custom-cursor,
+        #cursor-trail {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+        .gallery-item:nth-child(1) {
+          grid-column: span 1;
+        }
+        .chalkboard {
+          padding: 32px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================================================
+       PRELOADER
+  ============================================================ -->
+    <div id="preloader" role="status" aria-label="Loading StarMo website">
+      <div class="preloader-logo">
+        <span class="preloader-star">★</span>starMo
+      </div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+      <p class="preloader-text">Setting the table for you...</p>
+    </div>
+
+    <!-- ============================================================
+       CUSTOM CURSOR
+  ============================================================ -->
+    <div id="custom-cursor" aria-hidden="true"></div>
+    <div id="cursor-trail" aria-hidden="true"></div>
+
+    <!-- ============================================================
+       LIGHTBOX
+  ============================================================ -->
+    <div
+      id="lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Image lightbox"
+    >
+      <button id="lightbox-close" aria-label="Close lightbox">
+        <i class="fa fa-times"></i>
+      </button>
+      <button id="lightbox-prev" aria-label="Previous image">
+        <i class="fa fa-chevron-left"></i>
+      </button>
+      <img id="lightbox-img" src="" alt="Gallery image" />
+      <button id="lightbox-next" aria-label="Next image">
+        <i class="fa fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+    <nav id="navbar" role="navigation" aria-label="Main navigation">
+      <div class="container nav-inner">
+        <a href="#hero" class="nav-logo" aria-label="StarMo Home"
+          ><span>★</span>starMo</a
+        >
+        <ul class="nav-links" role="list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#specials">Specials</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button
+            id="theme-toggle"
+            aria-label="Toggle dark mode"
+            title="Toggle dark/light mode"
+          >
+            <i class="fa fa-moon" id="theme-icon"></i>
+          </button>
+          <a
+            href="#booking"
+            class="btn btn-primary"
+            style="display: none"
+            id="nav-book-btn"
+          >
+            <i class="fa fa-calendar"></i> Reserve
+          </a>
+          <button id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div
+      id="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation"
+    >
+      <a href="#about" class="mobile-nav-link">About</a>
+      <a href="#menu" class="mobile-nav-link">Menu</a>
+      <a href="#gallery" class="mobile-nav-link">Gallery</a>
+      <a href="#specials" class="mobile-nav-link">Specials</a>
+      <a href="#testimonials" class="mobile-nav-link">Reviews</a>
+      <a href="#faq" class="mobile-nav-link">FAQ</a>
+      <a href="#booking" class="mobile-nav-link">Book a Table</a>
+      <a href="#contact" class="mobile-nav-link">Contact</a>
+    </div>
+
+    <main>
+      <!-- ============================================================
+         HERO SECTION
+    ============================================================ -->
+      <section id="hero" aria-label="Hero — Welcome to StarMo">
+        <!-- Video background (add your own src; fallback gradient shows if no video) -->
+        <video
+          id="hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          poster="./most.jpg"
+        >
+          <source src="most.mp4" type="video/mp4" />
+        </video>
+        <!-- Fallback illustrated gradient -->
+        <!-- <div class="hero-bg-fallback"></div> -->
+        <div class="hero-overlay"></div>
+        <div class="hero-frame" aria-hidden="true"></div>
+
+        <div class="hero-content">
+          <span class="hero-eyebrow">By the Old Bridge • Mostar, Bosnia</span>
+          <h1 class="hero-title"><span>★</span>starMo</h1>
+          <p class="hero-tagline">
+            Where the Neretva flows and flavours linger — <br />a rustic table
+            set just for you.
+          </p>
+          <div class="hero-buttons">
+            <a href="#menu" class="btn btn-primary"
+              ><i class="fa fa-utensils"></i> Explore Menu</a
+            >
+            <a
+              href="#booking"
+              class="btn btn-outline"
+              style="color: #ffce99; border-color: rgba(255, 206, 153, 0.5)"
+            >
+              <i class="fa fa-calendar-check"></i> Reserve a Table
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-scroll" aria-hidden="true">
+          <span>Scroll down</span>
+          <i class="fa fa-chevron-down"></i>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         ABOUT SECTION
+    ============================================================ -->
+      <section id="about" aria-label="About StarMo">
+        <div class="container">
+          <div class="about-grid">
+            <!-- Images -->
+            <div class="about-images fade-in">
+              <img
+                src="https://picsum.photos/seed/mostar-bridge/600/500"
+                alt="The Old Bridge of Mostar reflected in the Neretva"
+                class="about-img-main"
+                loading="lazy"
+              />
+              <img
+                src="https://picsum.photos/seed/starmo-interior/400/340"
+                alt="Warm rustic interior of StarMo restaurant"
+                class="about-img-accent"
+                loading="lazy"
+              />
+              <div class="about-badge" aria-label="Est. 2011">
+                <span class="years">15</span>
+                <span class="years-label">Years of<br />warmth</span>
+              </div>
+            </div>
+
+            <!-- Text -->
+            <div class="about-text">
+              <span class="section-tag fade-in">Our Story</span>
+              <h2 class="section-title fade-in delay-1">
+                A Rustic Soul<br /><em>by the River's Edge</em>
+              </h2>
+              <div class="chalk-divider fade-in delay-2">
+                <i class="fa fa-star"></i>
+              </div>
+              <p
+                class="section-subtitle fade-in delay-2"
+                style="margin: 20px 0"
+              >
+                Nestled in the cobbled streets of Mostar's old town, just a
+                stone's throw from the iconic Stari Most, StarMo is more than a
+                restaurant — it's a gathering place where generations have
+                shared stories, laughter, and the honest food of the Balkans.
+              </p>
+              <p
+                class="section-subtitle fade-in delay-3"
+                style="margin-bottom: 32px"
+              >
+                We source our ingredients daily from local farms in the
+                Herzegovina hills, and our recipes have been passed down with
+                love — slowly, stubbornly, the way good food should be.
+              </p>
+
+              <div class="about-features">
+                <div class="about-feature fade-in delay-1">
+                  <div class="about-feature-icon">
+                    <i class="fa fa-leaf"></i>
+                  </div>
+                  <div>
+                    <h4>Farm-Fresh Daily</h4>
+                    <p>Seasonal produce from Herzegovina's valleys.</p>
+                  </div>
+                </div>
+                <div class="about-feature fade-in delay-2">
+                  <div class="about-feature-icon">
+                    <i class="fa fa-fire"></i>
+                  </div>
+                  <div>
+                    <h4>Wood-Fired Cooking</h4>
+                    <p>Traditional saç and open hearth flavours.</p>
+                  </div>
+                </div>
+                <div class="about-feature fade-in delay-3">
+                  <div class="about-feature-icon">
+                    <i class="fa fa-wine-glass"></i>
+                  </div>
+                  <div>
+                    <h4>Local Wines</h4>
+                    <p>Žilavka and Blatina from nearby vineyards.</p>
+                  </div>
+                </div>
+                <div class="about-feature fade-in delay-4">
+                  <div class="about-feature-icon">
+                    <i class="fa fa-map-marker-alt"></i>
+                  </div>
+                  <div>
+                    <h4>Old Town Views</h4>
+                    <p>Terrace overlooking the Neretva river.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         STATS SECTION
+    ============================================================ -->
+      <section id="stats" aria-label="StarMo by the numbers">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-card fade-in">
+              <span class="stat-number" data-target="15">0</span>
+              <span class="stat-suffix">+</span>
+              <span class="stat-label">Years of Hospitality</span>
+            </div>
+            <div class="stat-card fade-in delay-1">
+              <span class="stat-number" data-target="48">0</span>
+              <span class="stat-suffix">k</span>
+              <span class="stat-label">Happy Guests Served</span>
+            </div>
+            <div class="stat-card fade-in delay-2">
+              <span class="stat-number" data-target="32">0</span>
+              <span class="stat-suffix"></span>
+              <span class="stat-label">Dishes on Our Menu</span>
+            </div>
+            <div class="stat-card fade-in delay-3">
+              <span class="stat-number" data-target="98">0</span>
+              <span class="stat-suffix">%</span>
+              <span class="stat-label">Guest Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         MENU SECTION
+    ============================================================ -->
+      <section id="menu" aria-label="Our Menu">
+        <div class="container">
+          <div class="section-header centered fade-in">
+            <span class="section-tag">What We Serve</span>
+            <h2 class="section-title">Flavours of Herzegovina</h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+            <p class="section-subtitle" style="margin-top: 16px">
+              Every dish tells a story of the land, the river, and the hands
+              that prepared it with patience.
+            </p>
+          </div>
+
+          <div class="menu-tabs" role="tablist" aria-label="Menu categories">
+            <button
+              class="menu-tab active"
+              data-category="starters"
+              role="tab"
+              aria-selected="true"
+            >
+              Starters
+            </button>
+            <button class="menu-tab" data-category="mains" role="tab">
+              Mains
+            </button>
+            <button class="menu-tab" data-category="grills" role="tab">
+              Grills
+            </button>
+            <button class="menu-tab" data-category="drinks" role="tab">
+              Drinks
+            </button>
+            <button class="menu-tab" data-category="desserts" role="tab">
+              Desserts
+            </button>
+          </div>
+
+          <div class="menu-grid" id="menu-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         CHALKBOARD SPECIALS
+    ============================================================ -->
+      <section id="specials" aria-label="Chef's Specials">
+        <div class="container">
+          <div class="chalkboard">
+            <p class="chalk-sub">— Today's Picks —</p>
+            <h2 class="chalk-title">Chef's Specials</h2>
+            <div class="chalkboard-rule"></div>
+            <div class="specials-grid">
+              <div class="special-item fade-in">
+                <span class="emoji">🥩</span>
+                <h4>Saç Lamb</h4>
+                <p>
+                  Slow-cooked under the bell with vegetables and rosemary from
+                  our terrace pots
+                </p>
+                <span class="special-price">28 BAM</span>
+              </div>
+              <div class="special-item fade-in delay-2">
+                <span class="emoji">🐟</span>
+                <h4>Neretva Trout</h4>
+                <p>
+                  Grilled river trout, garlic butter, wild herbs and lemon from
+                  the garden
+                </p>
+                <span class="special-price">22 BAM</span>
+              </div>
+              <div class="special-item fade-in delay-4">
+                <span class="emoji">🍮</span>
+                <h4>Fig Baklava</h4>
+                <p>
+                  House-made baklava layered with local figs, walnuts and orange
+                  blossom syrup
+                </p>
+                <span class="special-price">8 BAM</span>
+              </div>
+            </div>
+            <div class="chalkboard-rule"></div>
+            <p
+              style="
+                font-family: var(--font-hand);
+                color: rgba(255, 206, 153, 0.4);
+                text-align: center;
+                font-size: 0.9rem;
+              "
+            >
+              Specials change daily — ask your server for today's full board
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         PRICING TABLE
+    ============================================================ -->
+      <section id="pricing" aria-label="Dining Experiences">
+        <div class="container">
+          <div class="section-header centered fade-in">
+            <span class="section-tag">Dining Experiences</span>
+            <h2 class="section-title">Choose Your Feast</h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+            <p class="section-subtitle" style="margin-top: 16px">
+              Whether it's a quick coffee by the bridge or a long, languid
+              evening with friends — we have a table for every story.
+            </p>
+          </div>
+          <div class="pricing-grid">
+            <div class="pricing-card fade-in">
+              <div class="pricing-icon">☕</div>
+              <h3 class="pricing-name">Café & Bites</h3>
+              <p class="pricing-desc">
+                Perfect for a mid-morning stop — Bosnian coffee, pastries, and
+                light snacks.
+              </p>
+              <div class="pricing-price">
+                <sup>from </sup>5 <span style="font-size: 1.2rem">BAM</span>
+              </div>
+              <span class="pricing-period">per person</span>
+              <ul class="pricing-features">
+                <li><i class="fa fa-check"></i> Bosnian coffee or tea</li>
+                <li><i class="fa fa-check"></i> Seasonal pastries</li>
+                <li><i class="fa fa-check"></i> Terrace seating available</li>
+                <li><i class="fa fa-check"></i> Mon – Sun, 08:00 – 12:00</li>
+              </ul>
+              <a
+                href="#booking"
+                class="btn btn-outline"
+                style="width: 100%; justify-content: center"
+                >Reserve Spot</a
+              >
+            </div>
+
+            <div class="pricing-card featured fade-in delay-2">
+              <div class="pricing-badge">Most Popular</div>
+              <div class="pricing-icon">🍽️</div>
+              <h3 class="pricing-name">Full Dining</h3>
+              <p class="pricing-desc">
+                The classic StarMo experience — starter, main, dessert, and wine
+                by the glass.
+              </p>
+              <div class="pricing-price">
+                <sup>from </sup>38 <span style="font-size: 1.2rem">BAM</span>
+              </div>
+              <span class="pricing-period">per person</span>
+              <ul class="pricing-features">
+                <li><i class="fa fa-check"></i> 3-course seasonal menu</li>
+                <li><i class="fa fa-check"></i> Local Žilavka wine pairing</li>
+                <li><i class="fa fa-check"></i> River-view terrace priority</li>
+                <li>
+                  <i class="fa fa-check"></i> Chef's daily special included
+                </li>
+                <li><i class="fa fa-check"></i> Complimentary bread basket</li>
+              </ul>
+              <a
+                href="#booking"
+                class="btn btn-primary"
+                style="width: 100%; justify-content: center"
+                >Reserve a Table</a
+              >
+            </div>
+
+            <div class="pricing-card fade-in delay-4">
+              <div class="pricing-icon">🥂</div>
+              <h3 class="pricing-name">Private Event</h3>
+              <p class="pricing-desc">
+                Host birthdays, anniversaries, or corporate evenings with a
+                bespoke menu.
+              </p>
+              <div class="pricing-price">
+                <sup>from </sup>65 <span style="font-size: 1.2rem">BAM</span>
+              </div>
+              <span class="pricing-period">per person</span>
+              <ul class="pricing-features">
+                <li><i class="fa fa-check"></i> Private area exclusive use</li>
+                <li><i class="fa fa-check"></i> Custom tasting menu</li>
+                <li><i class="fa fa-check"></i> Dedicated host & server</li>
+                <li><i class="fa fa-check"></i> Decoration on request</li>
+                <li><i class="fa fa-check"></i> Full bar & cellar access</li>
+              </ul>
+              <a
+                href="#contact"
+                class="btn btn-outline"
+                style="width: 100%; justify-content: center"
+                >Enquire Now</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         GALLERY SECTION
+    ============================================================ -->
+      <section id="gallery" aria-label="Photo Gallery">
+        <div class="container">
+          <div class="section-header centered fade-in">
+            <span class="section-tag">A Glimpse Inside</span>
+            <h2 class="section-title">Gallery</h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+          </div>
+          <div class="gallery-grid" id="gallery-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         TESTIMONIALS
+    ============================================================ -->
+      <section id="testimonials" aria-label="Guest Reviews">
+        <div class="container">
+          <div
+            class="section-header centered fade-in"
+            style="color: var(--peach)"
+          >
+            <span class="section-tag" style="color: var(--orange)"
+              >What Guests Say</span
+            >
+            <h2 class="section-title" style="color: var(--warm-white)">
+              Straight from the Heart
+            </h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+          </div>
+          <div class="testimonials-slider">
+            <div class="testimonials-track" id="testimonials-track">
+              <!-- Slides populated by JS -->
+            </div>
+          </div>
+          <div class="slider-controls">
+            <button
+              class="slider-btn"
+              id="prev-testimonial"
+              aria-label="Previous review"
+            >
+              <i class="fa fa-chevron-left"></i>
+            </button>
+            <div class="slider-dots" id="slider-dots"></div>
+            <button
+              class="slider-btn"
+              id="next-testimonial"
+              aria-label="Next review"
+            >
+              <i class="fa fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         BOOKING SECTION
+    ============================================================ -->
+      <section id="booking" aria-label="Reserve a Table">
+        <div class="container">
+          <div class="booking-grid">
+            <div class="booking-info fade-in">
+              <span class="section-tag">Reserve a Table</span>
+              <h2 class="section-title">
+                Join Us for<br /><em>a Warm Meal</em>
+              </h2>
+              <div class="chalk-divider"><i class="fa fa-star"></i></div>
+              <p class="section-subtitle" style="margin: 20px 0">
+                We'd love to have you at StarMo. Make a reservation and secure
+                your spot on our riverside terrace — especially recommended at
+                sunset.
+              </p>
+              <ul class="booking-details">
+                <li>
+                  <i class="fa fa-clock"></i>
+                  <div>
+                    <strong>Opening Hours</strong><br />
+                    Mon – Fri: 08:00 – 23:00 &nbsp;|&nbsp; Sat – Sun: 09:00 –
+                    00:00
+                  </div>
+                </li>
+                <li>
+                  <i class="fa fa-phone"></i>
+                  <div>
+                    <strong>Reservations by Phone</strong><br />
+                    +387 36 555 888
+                  </div>
+                </li>
+                <li>
+                  <i class="fa fa-map-marker-alt"></i>
+                  <div>
+                    <strong>Our Address</strong><br />
+                    Onešćukova 14, 88000 Mostar, Bosnia & Herzegovina
+                  </div>
+                </li>
+              </ul>
+              <a href="tel:+38736555888" class="btn btn-chalk"
+                ><i class="fa fa-phone"></i> Call to Reserve</a
+              >
+            </div>
+
+            <div class="booking-form fade-in delay-2">
+              <h3
+                style="
+                  font-family: var(--font-serif);
+                  color: var(--text-main);
+                  margin-bottom: 24px;
+                "
+              >
+                <i
+                  class="fa fa-calendar-check"
+                  style="color: var(--orange)"
+                ></i>
+                Book a Table
+              </h3>
+              <form id="booking-form" novalidate>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="book-name">Full Name *</label>
+                    <input
+                      type="text"
+                      id="book-name"
+                      name="name"
+                      placeholder="Amira Kovačević"
+                      required
+                    />
+                    <span class="form-error-msg" id="book-name-err"
+                      >Please enter your name.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="book-email">Email Address *</label>
+                    <input
+                      type="email"
+                      id="book-email"
+                      name="email"
+                      placeholder="amira@example.com"
+                      required
+                    />
+                    <span class="form-error-msg" id="book-email-err"
+                      >Please enter a valid email.</span
+                    >
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="book-date">Date *</label>
+                    <input type="date" id="book-date" name="date" required />
+                    <span class="form-error-msg" id="book-date-err"
+                      >Please pick a date.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="book-time">Time *</label>
+                    <select id="book-time" name="time" required>
+                      <option value="">Select time</option>
+                      <option>12:00</option>
+                      <option>12:30</option>
+                      <option>13:00</option>
+                      <option>13:30</option>
+                      <option>14:00</option>
+                      <option>18:00</option>
+                      <option>18:30</option>
+                      <option>19:00</option>
+                      <option>19:30</option>
+                      <option>20:00</option>
+                      <option>20:30</option>
+                      <option>21:00</option>
+                    </select>
+                    <span class="form-error-msg" id="book-time-err"
+                      >Please select a time.</span
+                    >
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="book-guests">Guests *</label>
+                    <select id="book-guests" name="guests" required>
+                      <option value="">Number of guests</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7 – 10</option>
+                      <option>10+</option>
+                    </select>
+                    <span class="form-error-msg" id="book-guests-err"
+                      >Please select guest count.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="book-phone">Phone</label>
+                    <input
+                      type="tel"
+                      id="book-phone"
+                      name="phone"
+                      placeholder="+387 ..."
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="book-notes">Special Requests</label>
+                  <textarea
+                    id="book-notes"
+                    name="notes"
+                    placeholder="Allergies, anniversary, terrace preference…"
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="width: 100%; justify-content: center"
+                >
+                  <i class="fa fa-calendar-check"></i> Confirm Reservation
+                </button>
+                <div class="form-success" id="book-success">
+                  <i
+                    class="fa fa-check-circle"
+                    style="color: #48bb78; font-size: 1.5rem"
+                  ></i>
+                  <p style="margin-top: 8px; font-weight: 700">
+                    Reservation received!
+                  </p>
+                  <p style="font-size: 0.88rem">
+                    We'll confirm your table within the hour. See you soon! 🌟
+                  </p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         FAQ SECTION
+    ============================================================ -->
+      <section id="faq" aria-label="Frequently Asked Questions">
+        <div class="container">
+          <div class="section-header centered fade-in">
+            <span class="section-tag">Common Questions</span>
+            <h2 class="section-title">You Asked, We Answer</h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+          </div>
+          <div class="faq-grid" id="faq-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+         CONTACT SECTION
+    ============================================================ -->
+      <section id="contact" aria-label="Contact Us">
+        <div class="container">
+          <div class="section-header centered fade-in">
+            <span class="section-tag">Get in Touch</span>
+            <h2 class="section-title">We'd Love to Hear from You</h2>
+            <div class="chalk-divider"><i class="fa fa-star"></i></div>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-form-wrap fade-in">
+              <h3
+                style="
+                  font-family: var(--font-serif);
+                  color: var(--text-main);
+                  margin-bottom: 24px;
+                "
+              >
+                Send a Message
+              </h3>
+              <form id="contact-form" novalidate>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="con-name">Your Name *</label>
+                    <input
+                      type="text"
+                      id="con-name"
+                      placeholder="Your full name"
+                      required
+                    />
+                    <span class="form-error-msg" id="con-name-err"
+                      >Name is required.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="con-email">Email *</label>
+                    <input
+                      type="email"
+                      id="con-email"
+                      placeholder="your@email.com"
+                      required
+                    />
+                    <span class="form-error-msg" id="con-email-err"
+                      >Valid email required.</span
+                    >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="con-subject">Subject</label>
+                  <input
+                    type="text"
+                    id="con-subject"
+                    placeholder="Catering enquiry, feedback, press…"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="con-msg">Message *</label>
+                  <textarea
+                    id="con-msg"
+                    rows="5"
+                    placeholder="Tell us what's on your mind…"
+                    required
+                    style="min-height: 130px"
+                  ></textarea>
+                  <span class="form-error-msg" id="con-msg-err"
+                    >Please write a message.</span
+                  >
+                </div>
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="width: 100%; justify-content: center"
+                >
+                  <i class="fa fa-paper-plane"></i> Send Message
+                </button>
+                <div class="form-success" id="con-success">
+                  <i
+                    class="fa fa-check-circle"
+                    style="color: #48bb78; font-size: 1.5rem"
+                  ></i>
+                  <p style="margin-top: 8px; font-weight: 700">Message sent!</p>
+                  <p style="font-size: 0.88rem">
+                    We'll get back to you within 24 hours. Thank you!
+                  </p>
+                </div>
+              </form>
+            </div>
+            <div class="fade-in delay-2">
+              <div
+                style="
+                  background: var(--card-bg);
+                  border: 1px solid var(--border);
+                  border-radius: 8px;
+                  padding: 40px;
+                  margin-bottom: 24px;
+                "
+              >
+                <h3
+                  style="
+                    font-family: var(--font-serif);
+                    color: var(--text-main);
+                    margin-bottom: 20px;
+                  "
+                >
+                  Find Us
+                </h3>
+                <ul class="booking-details">
+                  <li>
+                    <i class="fa fa-map-marker-alt"></i
+                    ><span>Onešćukova 14, 88000 Mostar, BiH</span>
+                  </li>
+                  <li>
+                    <i class="fa fa-phone"></i><span>+387 36 555 888</span>
+                  </li>
+                  <li>
+                    <i class="fa fa-envelope"></i><span>hello@starmo.ba</span>
+                  </li>
+                </ul>
+              </div>
+              <!-- Google Maps Embed -->
+              <div class="map-wrap">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2896.9553580248177!2d17.814916915573253!3d43.33641898080463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x134b4f2da8f55555%3A0x4e5e5a6c2a5c5e5e!2sStari%20Most%2C%20Mostar!5e0!3m2!1sen!2sba!4v1680000000000!5m2!1sen!2sba"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  title="StarMo Location — near Old Bridge, Mostar"
+                  aria-label="Google Maps showing StarMo location near the Old Bridge in Mostar"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+    <footer id="footer" aria-label="Site footer">
+      <div class="container">
+        <div class="footer-grid">
+          <!-- Brand -->
+          <div class="footer-brand">
+            <a href="#hero" class="nav-logo"><span>★</span>starMo</a>
+            <p>
+              A rustic table by the Old Bridge of Mostar. Honest food, warm
+              people, and the sound of the Neretva just beyond the terrace.
+            </p>
+            <div class="social-links" aria-label="Social media links">
+              <a href="#" class="social-link" aria-label="Instagram"
+                ><i class="fab fa-instagram"></i
+              ></a>
+              <a href="#" class="social-link" aria-label="Facebook"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="#" class="social-link" aria-label="TripAdvisor"
+                ><i class="fab fa-tripadvisor"></i
+              ></a>
+              <a href="#" class="social-link" aria-label="YouTube"
+                ><i class="fab fa-youtube"></i
+              ></a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h4 class="footer-heading">Explore</h4>
+            <ul class="footer-links">
+              <li><a href="#about">About Us</a></li>
+              <li><a href="#menu">Our Menu</a></li>
+              <li><a href="#specials">Daily Specials</a></li>
+              <li><a href="#gallery">Gallery</a></li>
+              <li><a href="#testimonials">Guest Reviews</a></li>
+              <li><a href="#booking">Reservations</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+
+          <!-- Hours -->
+          <div>
+            <h4 class="footer-heading">Hours</h4>
+            <div class="footer-hours">
+              <div class="footer-hours-row">
+                <span>Monday</span><span>08:00 – 23:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Tuesday</span><span>08:00 – 23:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Wednesday</span><span>08:00 – 23:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Thursday</span><span>08:00 – 23:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Friday</span><span>08:00 – 00:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Saturday</span><span>09:00 – 00:00</span>
+              </div>
+              <div class="footer-hours-row">
+                <span>Sunday</span><span>09:00 – 22:00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Newsletter -->
+          <div>
+            <h4 class="footer-heading">Stay in the Loop</h4>
+            <p
+              style="
+                font-size: 0.85rem;
+                color: rgba(255, 206, 153, 0.5);
+                margin-bottom: 12px;
+                line-height: 1.6;
+              "
+            >
+              New specials, seasonal menus, and events — delivered to your inbox
+              every month.
+            </p>
+            <form id="newsletter-form" novalidate>
+              <div class="newsletter-form">
+                <input
+                  type="email"
+                  class="newsletter-input"
+                  id="newsletter-email"
+                  placeholder="your@email.com"
+                  aria-label="Newsletter email"
+                />
+                <button
+                  type="submit"
+                  class="newsletter-btn"
+                  aria-label="Subscribe"
+                >
+                  <i class="fa fa-arrow-right"></i>
+                </button>
+              </div>
+            </form>
+            <p class="newsletter-note" id="newsletter-msg">
+              No spam, ever. Unsubscribe anytime.
+            </p>
+
+            <div style="margin-top: 28px">
+              <h4 class="footer-heading" style="margin-bottom: 12px">
+                Find Us
+              </h4>
+              <p
+                style="
+                  font-size: 0.82rem;
+                  color: rgba(255, 206, 153, 0.5);
+                  line-height: 1.7;
+                "
+              >
+                Onešćukova 14<br />
+                88000 Mostar<br />
+                Bosnia & Herzegovina<br /><br />
+                <a href="tel:+38736555888" style="color: var(--orange)"
+                  >+387 36 555 888</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>
+            © 2025 StarMo Restaurant. All rights reserved. Made with ♥ in
+            Mostar.
+          </p>
+          <p>
+            <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+            <a href="#">Terms</a> &nbsp;·&nbsp;
+            <a href="#">Accessibility</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============================================================
+       STICKY CTA
+  ============================================================ -->
+    <div id="sticky-cta" aria-label="Quick reservation button">
+      <a href="#booking"
+        ><i class="fa fa-calendar-check"></i> Reserve a Table</a
+      >
+    </div>
+
+    <!-- ============================================================
+       BACK TO TOP
+  ============================================================ -->
+    <button id="back-to-top" aria-label="Back to top">
+      <i class="fa fa-chevron-up"></i>
+    </button>
+
+    <!-- ============================================================
+       JAVASCRIPT
+  ============================================================ -->
+    <script>
+      // ============================================================
+      // DATA
+      // ============================================================
+      const MENU_DATA = {
+        starters: [
+          {
+            name: "Čorba od Krompira",
+            price: "8 BAM",
+            desc: "Creamy potato soup with smoked paprika oil, croutons, and fresh chives from the garden.",
+            tags: ["Vegetarian", "Gluten-Free"],
+            seed: "soup1",
+          },
+          {
+            name: "Grilled Cheese Rolls",
+            price: "10 BAM",
+            desc: "Crispy phyllo rolls stuffed with aged kashkaval cheese, served with ajvar and sour cream.",
+            tags: ["Vegetarian"],
+            seed: "cheese1",
+          },
+          {
+            name: "Lamb Liver Pâté",
+            price: "12 BAM",
+            desc: "Silky lamb liver pâté on toasted bread, pickled walnuts, fig jam, and microgreens.",
+            tags: ["Chef's Pick"],
+            seed: "pate1",
+          },
+        ],
+        mains: [
+          {
+            name: "Bosanski Lonac",
+            price: "24 BAM",
+            desc: "The iconic Bosnian pot stew — layers of beef, vegetables, and herbs slow-cooked for 6 hours.",
+            tags: ["House Classic"],
+            seed: "stew1",
+          },
+          {
+            name: "Punjene Paprike",
+            price: "19 BAM",
+            desc: "Bell peppers stuffed with spiced minced beef and rice, in a rich tomato sauce.",
+            tags: ["Gluten-Free"],
+            seed: "peppers1",
+          },
+          {
+            name: "River Trout Fillet",
+            price: "22 BAM",
+            desc: "Fresh Neretva trout, pan-fried golden, with lemon butter, capers and wild herb salad.",
+            tags: ["Seasonal", "Chef's Pick"],
+            seed: "trout1",
+          },
+        ],
+        grills: [
+          {
+            name: "Ćevapi Plate",
+            price: "16 BAM",
+            desc: "Ten hand-rolled beef and lamb sausages with fresh somun bread, raw onion and kajmak.",
+            tags: ["House Classic", "Spicy Option"],
+            seed: "cevapi1",
+          },
+          {
+            name: "Mixed Grill Platter",
+            price: "34 BAM",
+            desc: "For two — ćevapi, pljeskavica, chicken skewers, grilled vegetables and three sauces.",
+            tags: ["For Two"],
+            seed: "grill1",
+          },
+          {
+            name: "Lamb Chops",
+            price: "28 BAM",
+            desc: "Marinated Herzegovina lamb chops, fire-grilled, with sautéed greens and potato wedges.",
+            tags: ["Gluten-Free", "Chef's Pick"],
+            seed: "lamb1",
+          },
+        ],
+        drinks: [
+          {
+            name: "Žilavka White Wine",
+            price: "18 BAM",
+            desc: "Crisp Herzegovina white from Mostar vineyards. Minerally, dry, with notes of peach and citrus. 500ml carafe.",
+            tags: ["Local", "Award Winning"],
+            seed: "wine1",
+          },
+          {
+            name: "Bosnian Coffee Set",
+            price: "4 BAM",
+            desc: "Traditional Bosnian coffee in a džezva, with rahat lokum and sugar cubes.",
+            tags: ["Traditional"],
+            seed: "coffee1",
+          },
+          {
+            name: "Herbal Lemonade",
+            price: "5 BAM",
+            desc: "Fresh-squeezed lemon with meadow herbs, elderflower and sparkling water. Refreshing and local.",
+            tags: ["Non-Alcoholic", "Seasonal"],
+            seed: "lemon1",
+          },
+        ],
+        desserts: [
+          {
+            name: "Baklava",
+            price: "7 BAM",
+            desc: "Layers of crispy phyllo, crushed walnuts and honey syrup. Our grandmother's recipe, unchanged.",
+            tags: ["Traditional", "Vegetarian"],
+            seed: "baklava1",
+          },
+          {
+            name: "Tufahija",
+            price: "8 BAM",
+            desc: "Poached apple filled with walnut cream, served warm with whipped kajmak and rose water.",
+            tags: ["Gluten-Free", "Chef's Pick"],
+            seed: "apple1",
+          },
+          {
+            name: "Warm Chocolate Cake",
+            price: "9 BAM",
+            desc: "Dark chocolate fondant with a molten centre, vanilla ice cream and crushed pistachio.",
+            tags: ["Vegetarian"],
+            seed: "choc1",
+          },
+        ],
+      };
+
+      const GALLERY_SEEDS = [
+        "mostar1",
+        "food2",
+        "interior3",
+        "bridge4",
+        "food5",
+        "chef6",
+        "terrace7",
+      ];
+      const GALLERY_ALTS = [
+        "The Neretva river at dusk",
+        "Freshly grilled ćevapi",
+        "Our warm rustic dining room",
+        "The Old Bridge of Mostar",
+        "Slow-cooked Bosanski lonac",
+        "Chef at work",
+        "Riverside terrace in summer",
+      ];
+
+      const TESTIMONIALS = [
+        {
+          text: "An unforgettable evening. The lamb cooked under saç was the best thing I ate in all of Bosnia. The terrace with the bridge view at sunset... pure magic.",
+          name: "Marija V.",
+          origin: "Zagreb, Croatia",
+          seed: "face1",
+          stars: 5,
+        },
+        {
+          text: "We stumbled in after walking the Old Bridge and stayed for three hours. The staff feel like family. The Bosnian coffee set was the perfect ending to a perfect meal.",
+          name: "James & Clara O.",
+          origin: "London, UK",
+          seed: "face2",
+          stars: 5,
+        },
+        {
+          text: "StarMo gets everything right — the food, the ambience, the warmth. I've visited Mostar four times and this is the only restaurant I return to every single trip.",
+          name: "Léa Rousseau",
+          origin: "Paris, France",
+          seed: "face3",
+          stars: 5,
+        },
+        {
+          text: "Had our anniversary dinner here. They decorated the table beautifully without being asked and the menu was outstanding. A truly special place.",
+          name: "Tariq & Fatima H.",
+          origin: "Dubai, UAE",
+          seed: "face4",
+          stars: 5,
+        },
+      ];
+
+      const FAQS = [
+        {
+          q: "Do I need a reservation?",
+          a: "Reservations are strongly recommended, especially on weekends and during summer. Walk-ins are welcome at the bar and on our street terrace, subject to availability.",
+        },
+        {
+          q: "Is the terrace open year-round?",
+          a: "Our riverside terrace is open from April through October. In colder months we move to our heated indoor dining room, which is equally cosy.",
+        },
+        {
+          q: "Do you cater for vegetarians and vegans?",
+          a: "Absolutely. We have a dedicated vegetarian section and can adapt most dishes for vegan guests. Please let us know when booking or on arrival.",
+        },
+        {
+          q: "Can I host a private event or birthday?",
+          a: "Yes! We can arrange exclusive use of our private dining area for groups from 10 to 50 guests. Contact us to discuss a custom menu and arrangement.",
+        },
+        {
+          q: "Is there parking nearby?",
+          a: "Mostar's old town is pedestrian-friendly. The nearest car park is at Lučki Most, a 5-minute walk. We recommend arriving on foot to enjoy the old town.",
+        },
+        {
+          q: "Do you accept credit cards?",
+          a: "Yes, we accept all major credit and debit cards. We also gladly accept BAM cash. Tipping is appreciated but never expected.",
+        },
+      ];
+
+      // ============================================================
+      // PRELOADER
+      // ============================================================
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          document.getElementById("preloader").classList.add("hidden");
+        }, 1900);
+      });
+
+      // ============================================================
+      // CUSTOM CURSOR
+      // ============================================================
+      const cursor = document.getElementById("custom-cursor");
+      const trail = document.getElementById("cursor-trail");
+      let tx = 0,
+        ty = 0,
+        cx = 0,
+        cy = 0;
+      document.addEventListener("mousemove", (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        cursor.style.left = cx + "px";
+        cursor.style.top = cy + "px";
+      });
+      setInterval(() => {
+        tx += (cx - tx) * 0.15;
+        ty += (cy - ty) * 0.15;
+        trail.style.left = tx + "px";
+        trail.style.top = ty + "px";
+      }, 16);
+      document
+        .querySelectorAll("a, button, .menu-card, .gallery-item, .faq-question")
+        .forEach((el) => {
+          el.addEventListener("mouseenter", () =>
+            cursor.classList.add("hover"),
+          );
+          el.addEventListener("mouseleave", () =>
+            cursor.classList.remove("hover"),
+          );
+        });
+
+      // ============================================================
+      // DARK / LIGHT TOGGLE
+      // ============================================================
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeIcon = document.getElementById("theme-icon");
+      let dark = localStorage.getItem("starmo-dark") === "true";
+      function applyTheme() {
+        document.body.classList.toggle("dark", dark);
+        themeIcon.className = dark ? "fa fa-sun" : "fa fa-moon";
+      }
+      applyTheme();
+      themeToggle.addEventListener("click", () => {
+        dark = !dark;
+        localStorage.setItem("starmo-dark", dark);
+        applyTheme();
+      });
+
+      // ============================================================
+      // NAVBAR SCROLL
+      // ============================================================
+      const navbar = document.getElementById("navbar");
+      const stickyCTA = document.getElementById("sticky-cta");
+      const backTop = document.getElementById("back-to-top");
+      const navBookBtn = document.getElementById("nav-book-btn");
+      window.addEventListener("scroll", () => {
+        const y = window.scrollY;
+        navbar.classList.toggle("scrolled", y > 50);
+        backTop.classList.toggle("show", y > 400);
+        stickyCTA.classList.toggle("show", y > 600);
+        navBookBtn.style.display = y > 400 ? "inline-flex" : "none";
+      });
+      backTop.addEventListener("click", () =>
+        window.scrollTo({ top: 0, behavior: "smooth" }),
+      );
+
+      // ============================================================
+      // HAMBURGER MENU
+      // ============================================================
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobile-menu");
+      hamburger.addEventListener("click", () => {
+        const open = hamburger.classList.toggle("open");
+        mobileMenu.classList.toggle("open", open);
+        hamburger.setAttribute("aria-expanded", open);
+        document.body.style.overflow = open ? "hidden" : "";
+      });
+      document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          hamburger.classList.remove("open");
+          mobileMenu.classList.remove("open");
+          hamburger.setAttribute("aria-expanded", false);
+          document.body.style.overflow = "";
+        });
+      });
+
+      // ============================================================
+      // SMOOTH SCROLL (for all hash links)
+      // ============================================================
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          const target = document.querySelector(a.getAttribute("href"));
+          if (target) {
+            e.preventDefault();
+            const offset = 80;
+            const top =
+              target.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: "smooth" });
+          }
+        });
+      });
+
+      // ============================================================
+      // SCROLL-TRIGGERED FADE-IN (IntersectionObserver)
+      // ============================================================
+      const fadeObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => fadeObserver.observe(el));
+
+      // ============================================================
+      // PARALLAX HERO
+      // ============================================================
+      window.addEventListener("scroll", () => {
+        const hero = document.getElementById("hero");
+        const offset = window.scrollY;
+        if (hero) {
+          const fallback = hero.querySelector(".hero-bg-fallback");
+          const video = hero.querySelector("#hero-video");
+          const overlay = hero.querySelector(".hero-overlay");
+          if (fallback)
+            fallback.style.transform = `translateY(${offset * 0.4}px)`;
+          if (video) video.style.transform = `translateY(${offset * 0.35}px)`;
+          if (overlay)
+            overlay.style.opacity = Math.min(0.72 + offset * 0.0005, 0.92);
+        }
+      });
+
+      // ============================================================
+      // STATS COUNTER
+      // ============================================================
+      const counterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting && !e.target.classList.contains("counted")) {
+              e.target.classList.add("counted");
+              const els = e.target.querySelectorAll(".stat-number");
+              els.forEach((el) => {
+                const target = +el.dataset.target;
+                let current = 0;
+                const step = target / 60;
+                const timer = setInterval(() => {
+                  current += step;
+                  if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                  }
+                  el.textContent = Math.floor(current);
+                }, 20);
+              });
+            }
+          });
+        },
+        { threshold: 0.4 },
+      );
+      const statsSection = document.getElementById("stats");
+      if (statsSection) counterObserver.observe(statsSection);
+
+      // ============================================================
+      // RENDER MENU
+      // ============================================================
+      function renderMenu(category) {
+        const grid = document.getElementById("menu-grid");
+        const items = MENU_DATA[category] || [];
+        grid.innerHTML = items
+          .map(
+            (item) => `
+        <div class="menu-card fade-in">
+          <img
+            src="https://picsum.photos/seed/${item.seed}/400/260"
+            alt="${item.name}"
+            class="menu-card-img"
+            loading="lazy"
+            data-lightbox="true"
+          />
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <h3>${item.name}</h3>
+              <span class="price">${item.price}</span>
+            </div>
+            <p>${item.desc}</p>
+            <div class="menu-card-tags">
+              ${item.tags.map((t) => `<span class="menu-tag">${t}</span>`).join("")}
+            </div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+        // Reobserve new elements
+        grid.querySelectorAll(".fade-in").forEach((el) => {
+          el.classList.remove("visible");
+          setTimeout(() => fadeObserver.observe(el), 50);
+        });
+        // Rebind lightbox to new images
+        bindGalleryLightbox();
+      }
+
+      document.querySelectorAll(".menu-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".menu-tab").forEach((t) => {
+            t.classList.remove("active");
+            t.setAttribute("aria-selected", "false");
+          });
+          tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
+          renderMenu(tab.dataset.category);
+        });
+      });
+      renderMenu("starters"); // initial
+
+      // ============================================================
+      // RENDER GALLERY
+      // ============================================================
+      function buildGallery() {
+        const grid = document.getElementById("gallery-grid");
+        grid.innerHTML = GALLERY_SEEDS.map(
+          (seed, i) => `
+        <div class="gallery-item fade-in" data-index="${i}">
+          <img
+            src="https://picsum.photos/seed/${seed}/800/600"
+            alt="${GALLERY_ALTS[i]}"
+            loading="lazy"
+          />
+          <div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+        </div>
+      `,
+        ).join("");
+        grid
+          .querySelectorAll(".fade-in")
+          .forEach((el) => fadeObserver.observe(el));
+      }
+      buildGallery();
+
+      // ============================================================
+      // LIGHTBOX
+      // ============================================================
+      let lightboxImages = [];
+      let lightboxIndex = 0;
+
+      function openLightbox(images, index) {
+        lightboxImages = images;
+        lightboxIndex = index;
+        showLightboxImage();
+        document.getElementById("lightbox").classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      function closeLightbox() {
+        document.getElementById("lightbox").classList.remove("open");
+        document.body.style.overflow = "";
+      }
+      function showLightboxImage() {
+        document.getElementById("lightbox-img").src =
+          lightboxImages[lightboxIndex].src;
+        document.getElementById("lightbox-img").alt =
+          lightboxImages[lightboxIndex].alt;
+      }
+      document
+        .getElementById("lightbox-close")
+        .addEventListener("click", closeLightbox);
+      document.getElementById("lightbox").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("lightbox")) closeLightbox();
+      });
+      document.getElementById("lightbox-prev").addEventListener("click", () => {
+        lightboxIndex =
+          (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
+        showLightboxImage();
+      });
+      document.getElementById("lightbox-next").addEventListener("click", () => {
+        lightboxIndex = (lightboxIndex + 1) % lightboxImages.length;
+        showLightboxImage();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (!document.getElementById("lightbox").classList.contains("open"))
+          return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft")
+          document.getElementById("lightbox-prev").click();
+        if (e.key === "ArrowRight")
+          document.getElementById("lightbox-next").click();
+      });
+
+      function bindGalleryLightbox() {
+        // Gallery items
+        document.querySelectorAll(".gallery-item").forEach((item, i) => {
+          item.addEventListener("click", () => {
+            const allImgs = [
+              ...document.querySelectorAll(".gallery-item img"),
+            ].map((img) => ({ src: img.src, alt: img.alt }));
+            openLightbox(allImgs, i);
+          });
+        });
+        // Menu images
+        document
+          .querySelectorAll(".menu-card-img[data-lightbox]")
+          .forEach((img) => {
+            img.addEventListener("click", () => {
+              openLightbox([{ src: img.src, alt: img.alt }], 0);
+            });
+          });
+      }
+      bindGalleryLightbox();
+
+      // ============================================================
+      // TESTIMONIALS SLIDER
+      // ============================================================
+      function buildTestimonials() {
+        const track = document.getElementById("testimonials-track");
+        const dots = document.getElementById("slider-dots");
+        track.innerHTML = TESTIMONIALS.map(
+          (t) => `
+        <div class="testimonial-slide" role="group">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">
+              ${'<i class="fa fa-star"></i>'.repeat(t.stars)}
+            </div>
+            <p class="testimonial-text">"${t.text}"</p>
+            <div class="testimonial-author">
+              <img
+                src="https://picsum.photos/seed/${t.seed}/80/80"
+                alt="Portrait of ${t.name}"
+                class="testimonial-avatar"
+                loading="lazy"
+              />
+              <div>
+                <div class="testimonial-name">${t.name}</div>
+                <div class="testimonial-origin">${t.origin}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+        ).join("");
+
+        dots.innerHTML = TESTIMONIALS.map(
+          (_, i) => `
+        <button class="slider-dot ${i === 0 ? "active" : ""}" data-index="${i}" aria-label="Go to review ${i + 1}"></button>
+      `,
+        ).join("");
+      }
+      buildTestimonials();
+
+      let currentSlide = 0;
+      function goToSlide(n) {
+        const track = document.getElementById("testimonials-track");
+        const allDots = document.querySelectorAll(".slider-dot");
+        currentSlide = (n + TESTIMONIALS.length) % TESTIMONIALS.length;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        allDots.forEach((d, i) =>
+          d.classList.toggle("active", i === currentSlide),
+        );
+      }
+      document
+        .getElementById("prev-testimonial")
+        .addEventListener("click", () => goToSlide(currentSlide - 1));
+      document
+        .getElementById("next-testimonial")
+        .addEventListener("click", () => goToSlide(currentSlide + 1));
+      document.querySelectorAll(".slider-dot").forEach((d) => {
+        d.addEventListener("click", () => goToSlide(+d.dataset.index));
+      });
+      // Auto-play
+      setInterval(() => goToSlide(currentSlide + 1), 6000);
+
+      // ============================================================
+      // FAQ ACCORDION
+      // ============================================================
+      function buildFAQ() {
+        const list = document.getElementById("faq-list");
+        list.innerHTML = FAQS.map(
+          (item, i) => `
+        <div class="faq-item fade-in ${i % 2 === 0 ? "" : "delay-2"}">
+          <button class="faq-question" aria-expanded="false">
+            ${item.q}
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+          <div class="faq-answer"><p>${item.a}</p></div>
+        </div>
+      `,
+        ).join("");
+        list
+          .querySelectorAll(".faq-item")
+          .forEach((el) => fadeObserver.observe(el));
+
+        list.querySelectorAll(".faq-question").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const item = btn.closest(".faq-item");
+            const open = item.classList.toggle("open");
+            btn.setAttribute("aria-expanded", open);
+            // Close others
+            list.querySelectorAll(".faq-item").forEach((other) => {
+              if (other !== item) {
+                other.classList.remove("open");
+                other
+                  .querySelector(".faq-question")
+                  .setAttribute("aria-expanded", false);
+              }
+            });
+          });
+        });
+      }
+      buildFAQ();
+
+      // ============================================================
+      // FORM VALIDATION (Booking)
+      // ============================================================
+      function validateField(input, errorId, message) {
+        let valid = true;
+        const errEl = document.getElementById(errorId);
+        if (!input.value.trim()) {
+          valid = false;
+        }
+        if (
+          input.type === "email" &&
+          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)
+        ) {
+          valid = false;
+        }
+        input.classList.toggle("error", !valid);
+        if (errEl) {
+          errEl.textContent = message;
+          errEl.classList.toggle("show", !valid);
+        }
+        return valid;
+      }
+
+      document
+        .getElementById("booking-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const v1 = validateField(
+            document.getElementById("book-name"),
+            "book-name-err",
+            "Please enter your name.",
+          );
+          const v2 = validateField(
+            document.getElementById("book-email"),
+            "book-email-err",
+            "Please enter a valid email.",
+          );
+          const v3 = validateField(
+            document.getElementById("book-date"),
+            "book-date-err",
+            "Please pick a date.",
+          );
+          const v4 = validateField(
+            document.getElementById("book-time"),
+            "book-time-err",
+            "Please select a time.",
+          );
+          const v5 = validateField(
+            document.getElementById("book-guests"),
+            "book-guests-err",
+            "Please select guest count.",
+          );
+          if (v1 && v2 && v3 && v4 && v5) {
+            document.getElementById("book-success").classList.add("show");
+            this.reset();
+            setTimeout(
+              () =>
+                document
+                  .getElementById("book-success")
+                  .classList.remove("show"),
+              6000,
+            );
+          }
+        });
+
+      // Form validation (Contact)
+      document
+        .getElementById("contact-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const v1 = validateField(
+            document.getElementById("con-name"),
+            "con-name-err",
+            "Name is required.",
+          );
+          const v2 = validateField(
+            document.getElementById("con-email"),
+            "con-email-err",
+            "Valid email required.",
+          );
+          const v3 = validateField(
+            document.getElementById("con-msg"),
+            "con-msg-err",
+            "Please write a message.",
+          );
+          if (v1 && v2 && v3) {
+            document.getElementById("con-success").classList.add("show");
+            this.reset();
+            setTimeout(
+              () =>
+                document.getElementById("con-success").classList.remove("show"),
+              6000,
+            );
+          }
+        });
+
+      // Newsletter
+      document
+        .getElementById("newsletter-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document
+            .getElementById("newsletter-email")
+            .value.trim();
+          const msg = document.getElementById("newsletter-msg");
+          if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            msg.textContent =
+              "✓ You're subscribed! Welcome to the StarMo family.";
+            msg.style.color = "#9ae6b4";
+            this.reset();
+            setTimeout(() => {
+              msg.textContent = "No spam, ever. Unsubscribe anytime.";
+              msg.style.color = "";
+            }, 5000);
+          } else {
+            msg.textContent = "✗ Please enter a valid email address.";
+            msg.style.color = "#fc8181";
+          }
+        });
+
+      // ============================================================
+      // REAL-TIME FIELD VALIDATION (remove error on input)
+      // ============================================================
+      document.querySelectorAll("input, select, textarea").forEach((field) => {
+        field.addEventListener("input", () => {
+          field.classList.remove("error");
+          const errEl = document.getElementById(field.id + "-err");
+          if (errEl) errEl.classList.remove("show");
+        });
+      });
+
+      // ============================================================
+      // SET MIN DATE FOR BOOKING
+      // ============================================================
+      const dateInput = document.getElementById("book-date");
+      if (dateInput) {
+        const today = new Date();
+        today.setDate(today.getDate() + 1);
+        dateInput.min = today.toISOString().split("T")[0];
+      }
+    </script>
+  </body>
+</html>
